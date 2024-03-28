@@ -8,7 +8,8 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "api-gateway:build"
+        "buildTarget": "api-gateway:build",
+        "port": 9231
       },
       "configurations": {
         "development": {
