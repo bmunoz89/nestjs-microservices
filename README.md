@@ -12,7 +12,16 @@ comes with a LSP for Vim users.
 
 ## Start the application
 
-Run `npx nx serve api-gateway` to start the development server. Happy coding!
+```javascript
+// Clears all the cached Nx artifacts and metadata about the workspace and shuts down the Nx Daemon.
+yarn nx reset
+
+yarn nx serve api-gateway
+yarn nx serve auth-microservice
+yarn nx serve payments-microservice
+
+yarn nx run-many --parallel --target=serve --all
+```
 
 ## Build for production
 

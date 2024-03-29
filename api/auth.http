@@ -1,0 +1,16 @@
+### Sign up
+POST http://localhost:3001/api/auth/sign-up
+Content-Type: application/json
+
+{
+    "name": "boris",
+    "email": "bmunozc89@gmail.com"
+}
+
+### Sign in
+POST http://localhost:3001/api/auth/sign-in
+Content-Type: application/json
+
+{
+    "email": "bmunozc89@gmail.com"
+}

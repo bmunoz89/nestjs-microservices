@@ -8,6 +8,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "strict": true,
     "target": "es2015",
     "module": "esnext",
     "lib": ["es2020", "dom"],
@@ -15,7 +16,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@nestjs-microservices/shared": ["shared/src/index.ts"]
+      "@shared/*": ["shared/src/*/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

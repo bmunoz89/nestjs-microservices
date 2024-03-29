@@ -1,13 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
-
+import { Controller, ValidationPipe } from '@nestjs/common';
+import { EventPattern, Payload } from '@nestjs/microservices';
+import { MakePaymentDto } from '@shared/dto';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getData() {
-    return this.appService.getData();
+  @EventPattern('process_payment')
+  async handleProcessPayment(@Payload(ValidationPipe) data: MakePaymentDto) {
+    await this.appService.processPayment(data);
   }
 }

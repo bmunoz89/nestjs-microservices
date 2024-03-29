@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { Microservices } from '@shared/constants';
-import { randomUUID } from 'crypto';
 import { Partitioners } from 'kafkajs';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { randomUUID } from 'node:crypto';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { AppService } from './app.service';
       },
     ]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [AuthService],
+  controllers: [AuthController],
 })
-export class AppModule {}
+export class AuthModule {}

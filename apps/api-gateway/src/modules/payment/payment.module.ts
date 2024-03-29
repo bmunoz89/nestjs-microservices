@@ -1,33 +1,34 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { Microservices } from '@shared/constants';
-import { randomUUID } from 'crypto';
 import { Partitioners } from 'kafkajs';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { randomUUID } from 'node:crypto';
+import { PaymentController } from './payment.controller';
+import { PaymentService } from './payment.service';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: Microservices.auth,
+        name: Microservices.payment,
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'auth',
+            clientId: 'payment',
             brokers: ['localhost:29092'],
           },
           consumer: {
-            groupId: 'auth-consumer-' + randomUUID(),
+            groupId: 'payment-consumer-' + randomUUID(),
           },
           producer: {
             createPartitioner: Partitioners.DefaultPartitioner,
           },
+          producerOnlyMode: true,
         },
       },
     ]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [PaymentController],
+  providers: [PaymentService],
 })
-export class AppModule {}
+export class PaymentModule {}
