@@ -16,7 +16,9 @@ export class AuthController {
 
   @Post('sign-up')
   async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto) {
-    const user = await this.authService.getUserByEmail(createUserDto.email);
+    const user: { name: string } = await this.authService.getUserByEmail(
+      createUserDto.email
+    );
     if (user) {
       throw new ConflictException('User already exist');
     }
