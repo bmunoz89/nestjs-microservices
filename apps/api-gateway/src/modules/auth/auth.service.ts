@@ -1,34 +1,35 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
-import { Microservices } from '@shared/constants';
 import { CreateUserDto } from '@shared/dto';
 import { User } from '@shared/entities';
+import { EventPatterns, KafkaClientName, MessagePatterns } from '@shared/enums';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
   constructor(
-    @Inject(Microservices.auth) private readonly authClient: ClientKafka
+    @Inject(KafkaClientName.AUTH) private readonly authClient: ClientKafka
   ) {}
 
-  onModuleInit() {
-    this.authClient.subscribeToResponseOf('get_user_by_id');
-    this.authClient.subscribeToResponseOf('get_user_by_email');
+  async onModuleInit() {
+    this.authClient.subscribeToResponseOf(MessagePatterns.USER_BY_ID);
+    this.authClient.subscribeToResponseOf(MessagePatterns.USER_BY_EMAIL);
+    await this.authClient.connect();
   }
 
   createUser(createUserDto: CreateUserDto) {
-    this.authClient.emit('create_user', JSON.stringify(createUserDto));
+    this.authClient.emit(EventPatterns.CREATE_USER, createUserDto);
   }
 
   getUserById(userId: number): Promise<User | null> {
     return firstValueFrom(
-      this.authClient.send('get_user_by_id', JSON.stringify({ userId }))
+      this.authClient.send(MessagePatterns.USER_BY_ID, { userId })
     );
   }
 
   getUserByEmail(userEmail: string): Promise<User | null> {
     return firstValueFrom(
-      this.authClient.send('get_user_by_email', JSON.stringify({ userEmail }))
+      this.authClient.send(MessagePatterns.USER_BY_EMAIL, { userEmail })
     );
   }
 }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { Microservices } from '@shared/constants';
+import { KafkaClientName } from '@shared/enums';
 import { Partitioners } from 'kafkajs';
 import { randomUUID } from 'node:crypto';
 import { AuthController } from './auth.controller';
@@ -10,12 +10,12 @@ import { AuthService } from './auth.service';
   imports: [
     ClientsModule.register([
       {
-        name: Microservices.auth,
+        name: KafkaClientName.AUTH,
         transport: Transport.KAFKA,
         options: {
           client: {
             clientId: 'auth',
-            brokers: ['localhost:29092'],
+            brokers: ['localhost:9092'],
           },
           consumer: {
             groupId: 'auth-consumer-' + randomUUID(),

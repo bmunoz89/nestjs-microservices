@@ -3,6 +3,7 @@ import {
   ConflictException,
   Controller,
   HttpCode,
+  Logger,
   NotFoundException,
   Post,
   ValidationPipe,
@@ -12,14 +13,17 @@ import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
+
   constructor(private readonly authService: AuthService) {}
 
   @Post('sign-up')
   async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+    this.logger.log('createUserDto :>> ', createUserDto);
     const user = await this.authService.getUserByEmail(createUserDto.email);
-    if (user) {
-      throw new ConflictException('User already exist');
-    }
+
+    if (user) throw new ConflictException('User already exist');
+
     return this.authService.createUser(createUserDto);
   }
 
@@ -27,9 +31,7 @@ export class AuthController {
   @HttpCode(200)
   async signIn(@Body(ValidationPipe) getUserDto: GetUserDto) {
     const user = await this.authService.getUserByEmail(getUserDto.email);
-    if (!user) {
-      throw new NotFoundException();
-    }
+    if (!user) throw new NotFoundException();
     return user;
   }
 }
