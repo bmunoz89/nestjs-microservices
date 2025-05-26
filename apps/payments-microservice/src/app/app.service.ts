@@ -11,8 +11,9 @@ export class AppService implements OnModuleInit {
     @Inject(Microservices.auth) private readonly authClient: ClientKafka
   ) {}
 
-  onModuleInit() {
+  async onModuleInit() {
     this.authClient.subscribeToResponseOf('get_user_by_id');
+    await this.authClient.connect();
   }
 
   async processPayment(makePaymentDto: MakePaymentDto) {

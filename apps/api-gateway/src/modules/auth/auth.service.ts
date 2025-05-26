@@ -11,9 +11,10 @@ export class AuthService implements OnModuleInit {
     @Inject(Microservices.auth) private readonly authClient: ClientKafka
   ) {}
 
-  onModuleInit() {
+  async onModuleInit() {
     this.authClient.subscribeToResponseOf('get_user_by_id');
     this.authClient.subscribeToResponseOf('get_user_by_email');
+    await this.authClient.connect();
   }
 
   createUser(createUserDto: CreateUserDto) {

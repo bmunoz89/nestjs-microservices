@@ -11,4 +11,11 @@ export class AppController {
   async handleProcessPayment(@Payload(ValidationPipe) data: MakePaymentDto) {
     await this.appService.processPayment(data);
   }
+
+  @EventPattern('process_payment')
+  async handleProcessPaymentSecondTime(
+    @Payload(ValidationPipe) data: MakePaymentDto
+  ) {
+    console.log('data :>> ', data);
+  }
 }
