@@ -17,7 +17,7 @@ export class UserController {
 
   @EventPattern(EventPatterns.CREATE_USER)
   handleUserCreate(@Payload(ValidationPipe) data: CreateUserDto) {
-    const user = this.userService.getUserByEmail(data.email);
+    const user: { name: string } = this.userService.getUserByEmail(data.email);
     if (user) {
       this.logger.log(`user '${data.email}' already exist`);
       return;
