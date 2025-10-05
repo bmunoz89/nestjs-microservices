@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { KafkaClientName } from '@shared/enums';
 import { Partitioners } from 'kafkajs';
-import { randomUUID } from 'node:crypto';
 import { PaymentController } from './payment.controller';
 import { PaymentService } from './payment.service';
 
@@ -10,19 +9,17 @@ import { PaymentService } from './payment.service';
   imports: [
     ClientsModule.register([
       {
-        name: KafkaClientName.PAYMENT,
+        name: KafkaClientName.PAYMENT_EVENTS,
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'payment',
+            clientId: 'api-gateway-payment-events',
             brokers: ['localhost:9092'],
-          },
-          consumer: {
-            groupId: 'payment-consumer-' + randomUUID(),
           },
           producer: {
             createPartitioner: Partitioners.DefaultPartitioner,
           },
+          // Feature flag to skip consumer group registration and only act as a producer
           producerOnlyMode: true,
         },
       },

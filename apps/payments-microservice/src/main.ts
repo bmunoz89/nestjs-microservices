@@ -1,7 +1,7 @@
 import { LoggerMicroserviceInterceptor } from '@libs/logger-microservice';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { randomUUID } from 'crypto';
+import { KafkaConsumerGroup } from '@shared/enums';
 import { Partitioners } from 'kafkajs';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { AppModule } from './app/app.module';
@@ -17,7 +17,7 @@ async function bootstrap() {
           brokers: ['localhost:9092'],
         },
         consumer: {
-          groupId: 'payment-consumer-' + randomUUID(),
+          groupId: KafkaConsumerGroup.PAYMENT,
         },
         producer: {
           createPartitioner: Partitioners.DefaultPartitioner,

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { KafkaClientName } from '@shared/enums';
+import { KafkaClientName, KafkaConsumerGroup } from '@shared/enums';
 import { Partitioners } from 'kafkajs';
 import { LoggerModule } from 'nestjs-pino';
 import { randomUUID } from 'node:crypto';
@@ -26,15 +26,17 @@ import { AppService } from './app.service';
     }),
     ClientsModule.register([
       {
-        name: KafkaClientName.AUTH,
+        name: KafkaClientName.AUTH_MESSAGES,
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'auth',
+            clientId: 'payments-microservice-auth-messages',
             brokers: ['localhost:9092'],
           },
           consumer: {
-            groupId: 'auth-consumer-' + randomUUID(),
+            groupId: `payments-microservice-${
+              KafkaConsumerGroup.AUTH
+            }-${randomUUID()}`,
           },
           producer: {
             createPartitioner: Partitioners.DefaultPartitioner,
