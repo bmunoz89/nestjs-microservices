@@ -1,15 +1,16 @@
-import { Logger } from '@nestjs/common';
+import { LoggerMicroserviceInterceptor } from '@libs/logger-microservice';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
 import { Partitioners } from 'kafkajs';
+import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
-      logger: new Logger('auth-microservice'),
+      bufferLogs: true,
       transport: Transport.KAFKA,
       options: {
         client: {
@@ -23,6 +24,11 @@ async function bootstrap() {
         },
       },
     }
+  );
+  app.useLogger(app.get(Logger));
+  app.useGlobalInterceptors(
+    new LoggerErrorInterceptor(),
+    new LoggerMicroserviceInterceptor()
   );
   await app.listen();
 }

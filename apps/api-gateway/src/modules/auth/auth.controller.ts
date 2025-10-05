@@ -13,13 +13,10 @@ import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  private readonly logger = new Logger(AuthController.name);
-
   constructor(private readonly authService: AuthService) {}
 
   @Post('sign-up')
   async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto) {
-    this.logger.log('createUserDto :>> ', createUserDto);
     const user = await this.authService.getUserByEmail(createUserDto.email);
 
     if (user) throw new ConflictException('User already exist');

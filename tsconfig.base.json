@@ -16,6 +16,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@libs/logger-microservice": [
+        "libs/logger-microservice/src/index.ts"
+      ],
       "@shared/*": ["shared/src/*/index.ts"]
     }
   },

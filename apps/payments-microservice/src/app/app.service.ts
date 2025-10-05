@@ -20,16 +20,13 @@ export class AppService implements OnModuleInit {
 
   async processPayment(makePaymentDto: MakePaymentDto) {
     const { userId, amount } = makePaymentDto;
-    this.logger.log('process payment');
     const user: User | null = await firstValueFrom(
       this.authClient.send(MessagePatterns.USER_BY_ID, { userId })
     );
-    if (!user) {
-      this.logger.log(`user id '${userId}' does not exists`);
-      return;
-    }
-    this.logger.log(
-      `process payment for user ${user.name} - amount: ${amount}`
-    );
+    if (user)
+      this.logger.log(
+        `process payment for user ${user.name} - amount: ${amount}`
+      );
+    else this.logger.log(`user id '${userId}' does not exists`);
   }
 }

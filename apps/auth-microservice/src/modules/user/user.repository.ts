@@ -3,13 +3,11 @@ import { User } from '@shared/entities';
 
 @Injectable()
 export class UserRepository {
-  private readonly logger = new Logger(UserRepository.name);
   private readonly users: User[] = [];
 
   save(user: User) {
     user.id = this.users.length + 1;
     this.users.push({ ...user, id: user.id });
-    this.logger.log(`user created for '${user.email}' with id '${user.id}'`);
   }
 
   getUserById(id: number) {

@@ -11,17 +11,12 @@ import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-  private readonly logger = new Logger(UserController.name);
-
   constructor(private readonly userService: UserService) {}
 
   @EventPattern(EventPatterns.CREATE_USER)
   handleUserCreate(@Payload(ValidationPipe) data: CreateUserDto) {
     const user = this.userService.getUserByEmail(data.email);
-    if (user) {
-      this.logger.log(`user '${data.email}' already exist`);
-      return;
-    }
+    if (user) return;
     this.userService.createUser(data);
   }
 
@@ -32,7 +27,6 @@ export class UserController {
 
   @MessagePattern(MessagePatterns.USER_BY_EMAIL)
   handleFinUser(@Payload('userEmail') userEmail: string) {
-    this.logger.log('userEmail :>> ', userEmail);
     return this.userService.getUserByEmail(userEmail);
   }
 }
