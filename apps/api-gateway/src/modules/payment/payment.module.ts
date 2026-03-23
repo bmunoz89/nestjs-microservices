@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { KafkaClientName } from '@shared/enums';
 import { Partitioners } from 'kafkajs';
+import { EventBusModule } from '../event-bus/event-bus.module';
 import { PaymentController } from './payment.controller';
 import { PaymentService } from './payment.service';
 
@@ -24,6 +25,7 @@ import { PaymentService } from './payment.service';
         },
       },
     ]),
+    EventBusModule,
   ],
   controllers: [PaymentController],
   providers: [PaymentService],

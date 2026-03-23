@@ -2,6 +2,12 @@ import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { MakePaymentDto } from '@shared/dto';
 import { EventPatterns, KafkaClientName } from '@shared/enums';
+import { EventListener, EventMessage } from '../event-bus/event-bus.decorator';
+import type {
+  EventPayload,
+  EventResponse,
+} from '../event-bus/event-bus.interface';
+import { EventBusService } from '../event-bus/event-bus.service';
 
 @Injectable()
 export class PaymentService implements OnModuleDestroy {
@@ -9,7 +15,8 @@ export class PaymentService implements OnModuleDestroy {
 
   constructor(
     @Inject(KafkaClientName.PAYMENT_EVENTS)
-    private readonly paymentEventClient: ClientKafka
+    private readonly paymentEventClient: ClientKafka,
+    private readonly eventBusService: EventBusService
   ) {}
 
   async onModuleDestroy() {
@@ -21,7 +28,28 @@ export class PaymentService implements OnModuleDestroy {
     }
   }
 
-  makePayment(makePaymentDto: MakePaymentDto) {
+  async makePayment(makePaymentDto: MakePaymentDto) {
     this.paymentEventClient.emit(EventPatterns.PROCESS_PAYMENT, makePaymentDto);
+  }
+
+  @EventListener('payment.completed')
+  async handlePaymentCompleted(
+    payload: EventPayload<'payment.completed'>
+  ): EventResponse<'payment.completed'> {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    this.logger.log(
+      `3. payment.completed... Payment completed for user ${payload.userId} with amount ${payload.amount}`
+    );
+  }
+
+  @EventMessage('payment.make')
+  async handleMakePayment(
+    payload: EventPayload<'payment.make'>
+  ): EventResponse<'payment.make'> {
+    this.logger.log(
+      `1. payment.make... Processing payment for user ${payload.userId} with amount ${payload.amount}`
+    );
+
+    return payload.amount;
   }
 }

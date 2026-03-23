@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
 import { randomUUID } from 'node:crypto';
 import { AuthModule } from '../modules/auth/auth.module';
+import { EventBusModule } from '../modules/event-bus/event-bus.module';
 import { PaymentModule } from '../modules/payment/payment.module';
 
 @Module({
@@ -23,6 +24,7 @@ import { PaymentModule } from '../modules/payment/payment.module';
     }),
     AuthModule,
     PaymentModule,
+    EventBusModule,
   ],
 })
 export class AppModule {}
